@@ -204,11 +204,6 @@ while running:
                 
             if l > 0:
                 [_, loss, responses, global_step] = net.train(np.stack(images), np.stack(annotations), lr_values[lr_index], reg_values[reg_index], 1.0)
-                #store responses
-                for i in range(l):
-                    dp = datapoints[i]
-                    dp['response'] = responses[i]
-                    ds.put(dp,fn)
                     
         #feed single image tensorflow
         [[framebuffer]] = net.evaluate([liveimage], amp)
@@ -306,9 +301,7 @@ while running:
         
         #display last recorded response
         if keys[pygame.K_x] or time.time() < last_load_time + 0.25:
-            if "response" in data.keys():
-                framebuffer = data["response"].copy()
-
+            [[framebuffer]] = net.evaluate([data['image']], amp)
 
         if left:
             print("edit previous datapoint", data_fn)
