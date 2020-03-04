@@ -31,12 +31,17 @@ os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0,0)
 
 #Pygame is oldscool but gets the job done
 pygame.init()
-pygame.font.init()
+
 pygame.camera.init()
+
+pygame.font.init()
 pygame.mouse.set_visible(0)
 myfont = pygame.font.SysFont('Arial', 24)
 screen = pygame.display.set_mode((IMAGE_WIDTH*SCALE, IMAGE_HEIGHT*SCALE),  pygame.HWSURFACE|pygame.DOUBLEBUF)
 pygame.display.set_caption('Interactive Segmentation')
+
+
+
 
 
 
