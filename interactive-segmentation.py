@@ -83,13 +83,13 @@ def drawto(i,p,c,r):
 training = True
 
 
-cam = pygame.camera.Camera("/dev/video0",(IMAGE_WIDTH,IMAGE_HEIGHT))
+cam = pygame.camera.Camera("/dev/video2",(IMAGE_WIDTH,IMAGE_HEIGHT))
 cam.start()
 
 net = network.Network(IMAGE_HEIGHT, IMAGE_WIDTH, 'data/'+datasetfolder)
 
 lr_index = 1
-lr_values = [0.001,0.0001, 0.00001, 0.000001, 0.0000001]
+lr_values = [0.001,0.0005,0.0001, 0.00005,0.00001, 0.000005,0.000001, 0.0000005, 0.0000001]
 
 reg_index = 0
 reg_values = [0.0, 0.0000001, 0.000001, 0.00001, 0.0001, 0.001]
@@ -112,7 +112,11 @@ while running:
     
     if mode == 'training':
         cursor_color = (255,0,255)
-        liveimage = np.flip(pygame.surfarray.array3d(cam.get_image()).swapaxes(0,1), axis=1)
+        img = cam.get_image()
+        w,h = img.get_size()
+        if w != IMAGE_WIDTH or h != IMAGE_HEIGHT:
+            img = pygame.transform.scale(img, (IMAGE_WIDTH,IMAGE_HEIGHT))
+        liveimage = np.flip(pygame.surfarray.array3d(img).swapaxes(0,1), axis=1)
         target = None
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -252,6 +256,9 @@ while running:
                         print("no more data, going back to training mode")
                         mode = 'training'
                 
+                if event.key == pygame.K_b:
+                    data["annotation"] = np.ones((IMAGE_HEIGHT, IMAGE_WIDTH), dtype=np.float32)*-1
+               
                 if event.key == pygame.K_s:
                     print("save datapoint", data_fn)
                     ds.put(data, data_fn)
